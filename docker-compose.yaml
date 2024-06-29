@@ -1,0 +1,14 @@
+services:
+  benson_gpt:
+    build: .
+    volumes:
+    - ./src:/workspace/benson_bot/src
+    - ./test:/workspace/benson_bot/test
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: all
+            capabilities: [gpu]
+    command: python3 /workspace/benson_bot/src/main.py

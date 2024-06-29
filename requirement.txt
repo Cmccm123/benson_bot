@@ -1,0 +1,10 @@
+einops==0.8.0
+transformers==4.41.2
+accelerate==0.31.0
+sympy==1.12.1
+chromadb==0.5.3
+six==1.16.0
+pytz==2024.1
+zipp
+monotonic
+discord
