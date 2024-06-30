@@ -24,17 +24,21 @@ You may ask CM/Sunny to get this file. Because it is involving Benson's privacy,
 ```bash
 docker compose up
 ```
-4. enjoy :)
+4. enjoy :) in discord, you can ues this command to chat with benson
+
+```
+/benson hi
+```
 
 ## How it work
 
-I am using RAG technical for this fun project. RAG is a amazing solution for llm to learn a pepole about memory and style.
+I am using RAG technical for this fun project. RAG is a amazing solution for LLM to learn a pepole about memory and style.
 
 for Role play in LLM. Efficient & performance of RAG is also over fine tuning
 
-First I have careated a Embedding database and use a Embedding model which can let Benson' history chat data chang to vector, then solve to database. Script [bensonMsgToDB.py](script/bensonMsgToDB.py) is work for these
+First I have careated a Embedding database and use a Embedding model. Which can let Benson' history chat data chang to vector and solve to database. Script [bensonMsgToDB.py](script/bensonMsgToDB.py) is work for these
 
-Second we can find useful information in Embedding database to make model to answer user question. I have a keyword searcher in the system(use LLM). When user ask a question. it will output a keyword to search Embedding database. After that we can use this keyword to find similar datas on Embedding database and pass these datas to LLM model. it is helpful for LLM to answer the question.
+Second we can find useful information in Embedding database to make model to answer user question. I have a keyword searcher in the system(use LLM). When user ask a question. it will output a keyword. After that we can use this keyword to find similar datas on Embedding database also, pass these datas to LLM model. it is helpful for LLM to answer the question.
 
 
 To be continued...
