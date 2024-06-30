@@ -24,7 +24,7 @@ You may ask CM/Sunny to get this file. Because it is involving Benson's privacy,
 ```bash
 docker compose up
 ```
-4. enjoy :) in discord, you can ues this command to chat with benson
+5. enjoy :) in discord, you can ues this command to chat with benson
 
 ```
 /benson hi
