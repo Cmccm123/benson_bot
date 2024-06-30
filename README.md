@@ -1,6 +1,6 @@
 ## What is this
 
-it is a fun project for create a discord chatbot, which can imitate my my favorite teacher-Benson. the chatbot can talk with you as Benson. it is funny !
+it is a fun project for create a discord chatbot, which can imitate my favorite teacher-Benson. the chatbot can talk with you as Benson. it is funny !
 
 ## How to start
 
