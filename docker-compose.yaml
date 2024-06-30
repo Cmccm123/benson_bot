@@ -4,6 +4,7 @@ services:
     volumes:
     - ./src:/workspace/benson_bot/src
     - ./test:/workspace/benson_bot/test
+    - ./discord_token.txt:/workspace/benson_bot/discord_token.txt
     deploy:
       resources:
         reservations:
