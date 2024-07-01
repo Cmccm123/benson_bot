@@ -27,7 +27,7 @@ for i in odata:
     if(len(Find(i)) == 0):
         data.append(i)
 new_data=[]
-for i in range(0,len(data),5):
+for i in range(0,len(data),10):
     word = ""
     for j in data[i:i+10]:
         word+=j+"\n\n\n"

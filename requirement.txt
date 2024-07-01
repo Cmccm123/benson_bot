@@ -8,3 +8,4 @@ pytz==2024.1
 zipp
 monotonic
 discord
+FlagEmbedding
