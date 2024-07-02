@@ -1,9 +1,8 @@
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, AutoModel, TextIteratorStreamer
+from transformers import AutoModelForCausalLM, AutoTokenizer, AutoModel, TextIteratorStreamer,AutoModelForSequenceClassification
 import chromadb
 import heapq
 from threading import Thread
-from FlagEmbedding import FlagReranker
 from operator import itemgetter
 device = "cuda" # the device to load the model onto
 chroma_client = chromadb.PersistentClient(path="benson")
@@ -13,12 +12,16 @@ model = AutoModelForCausalLM.from_pretrained(
     device_map="auto"
 )
 
-reranker = FlagReranker('BAAI/bge-reranker-large', use_fp16=True) 
+reranker = AutoModelForSequenceClassification.from_pretrained(
+    'jinaai/jina-reranker-v2-base-multilingual',
+    torch_dtype="auto",
+    trust_remote_code=True,
+).to(device)
 
 tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2-7B-Instruct")
 emb_model = AutoModel.from_pretrained('jinaai/jina-embeddings-v2-base-zh', trust_remote_code=True)
 
-def generate_response(prompt):
+def generate_response(prompt,history=[]):
     key_word_messages = [
         {"role": "system", "content": "你是關鍵字搜尋器,你需要為一句句子創造關鍵字,關鍵字並不一定是句子中的詞語,而是要最能夠幫助系統在數據庫中搜尋到有用資料的關鍵字,\n你只能輸出搜尋搜尋名詞，也就是最終結果，不能輸出其他東西"},
         {"role": "user", "content": f"'你好，Google'的關鍵字是什麼"},
@@ -47,15 +50,16 @@ def generate_response(prompt):
         output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
     ]
 
-    response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
-    print(response)
+    key_word_response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
+    print(key_word_response)
     embeddings_result =[]
-    embeddings = emb_model.encode([str(response)])
+    embeddings = emb_model.encode([str(key_word_response)])
     collection = chroma_client.get_collection(name="benson")
     embeddings_result += collection.query(query_embeddings=embeddings.tolist(),n_results=20)['documents'][0]
     # embeddings_result_clean = [result_split for embed_result in embeddings_result for result_split in embed_result.split("\n\n\n")]
+    
     # 1st sort
-    scores = reranker.compute_score([[prompt,v] for v in embeddings_result])
+    scores = reranker.compute_score([[key_word_response,v] for v in embeddings_result], max_length=1024)
     top_values = heapq.nlargest(5, scores)
     checked_value = []
     embeddings_result_sort = []
@@ -71,8 +75,8 @@ def generate_response(prompt):
                     })
     # 2rd sort
     embeddings_result_clean = [result_split for embed_result in embeddings_result_sort for result_split in embed_result["context"].split("\n\n\n")]
-    scores = reranker.compute_score([[prompt,v] for v in embeddings_result_clean])
-    top_values = heapq.nlargest(20, scores)
+    scores = reranker.compute_score([[key_word_response,v] for v in embeddings_result_clean], max_length=1024)
+    top_values = heapq.nlargest(30, scores)
     checked_value = []
     embeddings_final_result = []
     for value in top_values:
@@ -97,16 +101,18 @@ def generate_response(prompt):
     
     Benson語錄(請你選擇對於回答問題有用的語錄):"""
     for i in embeddings_final_result:
-        print(i['context'])
-        print("======")
-        inp += f"<context>{i['context']}</centext>\n"
+        if i["score"] > 0:
+            print(i['context'])
+            print("======")
+            inp += f"<context>{i['context']}</centext>\n"
     
     inp += "請使用廣東話"
 
     messages = [
         {"role": "system", "content": inp},
-        {"role": "user", "content": prompt},
     ]
+    messages += history
+    messages.append({"role": "user", "content": prompt})
 
     text = tokenizer.apply_chat_template(
         messages,

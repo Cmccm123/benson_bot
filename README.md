@@ -4,11 +4,11 @@ it is a fun project for create a discord chatbot, which can imitate my favorite 
 
 ## How to start
 
-1.  Create your discord bot in https://discord.com/developers/applications
+1. Create your discord bot in https://discord.com/developers/applications
 
-2. You will get the token after you create the bot. Then input it in ```discord_token.txt```
+2. You will get the token after created the bot. Then input it in ```discord_token.txt```
 
-3. Put ```benson_chat.json``` into data floder. the     format should be:
+3. Put ```benson_chat.json``` into data floder. the format should be:
 ```json
 [
     "恭喜!",
@@ -24,7 +24,7 @@ You may ask CM/Sunny to get this file. Because it is involving Benson's privacy,
 ```bash
 docker compose up
 ```
-5. enjoy :) in discord, you can ues this command to chat with benson
+5. enjoy :) in discord, you can ues this command to chat with Benson
 
 ```
 /benson hi
