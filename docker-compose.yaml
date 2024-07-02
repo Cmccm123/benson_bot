@@ -5,6 +5,7 @@ services:
     - ./src:/workspace/benson_bot/src
     - ./test:/workspace/benson_bot/test
     - ./discord_token.txt:/workspace/benson_bot/discord_token.txt
+    - /dev/shm:/dev/shm
     deploy:
       resources:
         reservations:
@@ -12,4 +13,4 @@ services:
           - driver: nvidia
             count: all
             capabilities: [gpu]
-    command: python3 /workspace/benson_bot/src/main.py
+    command: ["python3","-u","/workspace/benson_bot/src/main.py"]

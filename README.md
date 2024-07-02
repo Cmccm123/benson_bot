@@ -32,13 +32,13 @@ docker compose up
 
 ## How it work
 
-I am using RAG technical for this fun project. RAG is a amazing solution for LLM to learn a pepole about memory and style.
+I am using RAG (Retrieval-Augmented Generation) techniques for this fun project. RAG is an amazing solution for enabling LLMs (Language Learning Models) to understand memory and style.
 
-for Role play in LLM. Efficient & performance of RAG is also over fine tuning
+For role-playing in LLMs, the efficiency and performance of RAG often surpass fine-tuning.
 
-First I have careated a Embedding database and use a Embedding model. Which can let Benson' history chat data chang to vector and solve to database. Script [bensonMsgToDB.py](script/bensonMsgToDB.py) is work for these
+First, I created an embedding database and used an embedding model. This model converts Benson's chat history data into vectors and stores them in the database. [bensonMsgToDB.py](script/bensonMsgToDB.py) handles this task.
 
-Second we can find useful information in Embedding database to make model to answer user question. I have a keyword searcher in the system(use LLM). When user ask a question. it will output a keyword. After that we can use this keyword to find similar datas on Embedding database also, pass these datas to LLM model. it is helpful for LLM to answer the question.
+Second, we can find useful information in the embedding database to help the model answer user questions. I have a keyword searcher in the system (using LLM). When a user asks a question, it outputs a keyword. We then use this keyword to find similar data in the embedding database and pass this data to the LLM model. This approach helps the LLM provide more accurate answers.
 
 
 To be continued...

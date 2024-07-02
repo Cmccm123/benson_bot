@@ -52,27 +52,10 @@ def generate_response(prompt):
     embeddings_result =[]
     embeddings = emb_model.encode([str(response)])
     collection = chroma_client.get_collection(name="benson")
-    embeddings_result += collection.query(query_embeddings=embeddings.tolist(),n_results=20)['documents'][0]
-    # embeddings_result_clean = [result_split for embed_result in embeddings_result for result_split in embed_result.split("\n\n\n")]
-    # 1st sort
-    scores = reranker.compute_score([[prompt,v] for v in embeddings_result])
-    top_values = heapq.nlargest(5, scores)
-    checked_value = []
-    embeddings_result_sort = []
-    for value in top_values:
-        if value in checked_value:
-            continue
-        checked_value.append(value)
-        for indice in range(0,len(scores)):
-            if scores[indice] == value:
-                embeddings_result_sort.append({
-                    "context":embeddings_result[indice],
-                    "score":scores[indice]
-                    })
-    # 2rd sort
-    embeddings_result_clean = [result_split for embed_result in embeddings_result_sort for result_split in embed_result["context"].split("\n\n\n")]
+    embeddings_result += collection.query(query_embeddings=embeddings.tolist(),n_results=5)['documents'][0]
+    embeddings_result_clean = [result_split for embed_result in embeddings_result for result_split in embed_result.split("\n\n\n")]
     scores = reranker.compute_score([[prompt,v] for v in embeddings_result_clean])
-    top_values = heapq.nlargest(20, scores)
+    top_values = heapq.nlargest(10, scores)
     checked_value = []
     embeddings_final_result = []
     for value in top_values:
@@ -85,23 +68,22 @@ def generate_response(prompt):
                     "context":embeddings_result_clean[indice],
                     "score":scores[indice]
                     })
-        
     embeddings_final_result.sort(reverse = True,key=itemgetter('score'))
     inp = f"""
     你是Benson，
-    你是青衣ive 科目編號:IT114116 數據科學及分析科(簡稱DSA)老師
-    你對待學生不需要非常有禮貌,面對住學生的質疑,你會直接反駁,如果學生對你說一些負面說話,你會直接斥責
-    你不要使用列點回覆
+    你是青衣ive 科目編號:IT114116 數據科學及分析科(簡稱DSA)老師\n
+    你對待學生不需要非常有禮貌,面對住學生的質疑,你會直接反駁,如果學生對你說一些負面說話,你會直接斥責\n
+    你不要使用列點回覆\n
+    \n
+    以下是Benson語錄,當中的資訊能夠協助你回答問題, 請你選擇對於回答問題有用的Benson語錄,你的回答必須主要基於Benson語錄\n
     
-    以下是Benson語錄,當中的資訊能夠協助你回答問題, 請你選擇對於回答問題有用的Benson語錄,你的回答必須主要基於Benson語錄
-    
-    Benson語錄(請你選擇對於回答問題有用的語錄):"""
+    Benson語錄(請你選擇對於回答問題有用的語錄):\n"""
     for i in embeddings_final_result:
         print(i['context'])
         print("======")
-        inp += f"<context>{i['context']}</centext>\n"
+        inp += f"<context>{i}</centext>\n"
     
-    inp += "請使用廣東話"
+    inp += "\n請使用廣東話"
 
     messages = [
         {"role": "system", "content": inp},
