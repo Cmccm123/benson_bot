@@ -21,7 +21,7 @@ reranker = AutoModelForSequenceClassification.from_pretrained(
 tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2-7B-Instruct")
 emb_model = AutoModel.from_pretrained('jinaai/jina-embeddings-v2-base-zh', trust_remote_code=True)
 
-def generate_response(prompt,history=[]):
+def generate_response(prompt,history=[],tpt=0.45):
     key_word_messages = [
         {"role": "system", "content": "你是關鍵字搜尋器,你需要為一句句子創造關鍵字,關鍵字並不一定是句子中的詞語,而是要最能夠幫助系統在數據庫中搜尋到有用資料的關鍵字,\n你只能輸出搜尋搜尋名詞，也就是最終結果，不能輸出其他東西"},
         {"role": "user", "content": f"'你好，Google'的關鍵字是什麼"},
@@ -121,7 +121,7 @@ def generate_response(prompt,history=[]):
     )
     model_inputs = tokenizer([text], return_tensors="pt").to(device)
     streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
-    generation_kwargs = dict(model_inputs, streamer=streamer, max_new_tokens=512, temperature=0.45)
+    generation_kwargs = dict(model_inputs, streamer=streamer, max_new_tokens=512, temperature=tpt)
 
     thread = Thread(target=model.generate, kwargs=generation_kwargs)
     thread.start()
