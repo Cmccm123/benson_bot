@@ -6,8 +6,9 @@ from threading import Thread
 from operator import itemgetter
 device = "cuda" # the device to load the model onto
 chroma_client = chromadb.PersistentClient(path="benson")
+model_path = "Qwen/Qwen2-7B-Instruct"
 model = AutoModelForCausalLM.from_pretrained(
-    "Qwen/Qwen2-7B-Instruct",
+    model_path,
     torch_dtype="auto",
     device_map="auto"
 )
@@ -18,7 +19,7 @@ reranker = AutoModelForSequenceClassification.from_pretrained(
     trust_remote_code=True,
 ).to(device)
 
-tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2-7B-Instruct")
+tokenizer = AutoTokenizer.from_pretrained(model_path)
 emb_model = AutoModel.from_pretrained('jinaai/jina-embeddings-v2-base-zh', trust_remote_code=True)
 
 def generate_response(prompt,history=[],tpt=0.45):
