@@ -6,7 +6,7 @@ from threading import Thread
 from operator import itemgetter
 device = "cuda" # the device to load the model onto
 chroma_client = chromadb.PersistentClient(path="benson")
-model_path = "Qwen/Qwen2-7B-Instruct"
+model_path = "shenzhi-wang/Gemma-2-9B-Chinese-Chat"
 model = AutoModelForCausalLM.from_pretrained(
     model_path,
     torch_dtype="auto",
@@ -22,7 +22,7 @@ reranker = AutoModelForSequenceClassification.from_pretrained(
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 emb_model = AutoModel.from_pretrained('jinaai/jina-embeddings-v2-base-zh', trust_remote_code=True)
 
-def generate_response(prompt,history=[],tpt=0.45):
+def generate_response(prompt,history=[],tpt=0.75):
     key_word_messages = [
         {"role": "system", "content": "你是關鍵字搜尋器,你需要為一句句子創造關鍵字,關鍵字並不一定是句子中的詞語,而是要最能夠幫助系統在數據庫中搜尋到有用資料的關鍵字,\n你只能輸出搜尋搜尋名詞，也就是最終結果，不能輸出其他東西"},
         {"role": "user", "content": f"你好，Google"},
@@ -92,15 +92,18 @@ def generate_response(prompt,history=[],tpt=0.45):
                     })
         
     embeddings_final_result.sort(reverse = True,key=itemgetter('score'))
+    
     inp = f"""
     你是Benson，
     你是青衣ive 科目編號:IT114116 數據科學及分析科(簡稱DSA)老師
     你對待學生不需要非常有禮貌,面對住學生的質疑,你會直接反駁,如果學生對你說一些負面說話,你會直接斥責
     你不要使用列點回覆
     
-    以下是Benson語錄,當中的資訊能夠協助你回答問題, 請你選擇對於回答問題有用的Benson語錄,你的回答必須主要基於Benson語錄
+    以下是Benson語錄,當中的資訊能夠協助你回答問題
     
     Benson語錄(請你選擇對於回答問題有用的語錄):"""
+    
+    
     for i in embeddings_final_result:
         if i["score"] > 0:
             print(i['context'])
