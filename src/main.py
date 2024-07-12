@@ -17,12 +17,16 @@ async def msg(ctx, * ,input_msg: str):
     response = generate_response(input_msg,user_chat[ctx.message.author.id],tpt.get(ctx.message.author.id,0.45))
     generated_text = ""
     time_start=time.time()
+    time.sleep(1)
     for new_text in response:
         if new_text  != "":
             generated_text += new_text
-            if time.time()-time_start>=1:
+            if time.time()-time_start>=1 and generated_text != "":
                 await message.edit(content=generated_text)
                 time_start=time.time()
+    if time.time()-time_start < 1:
+        time.sleep(1)
+    print(generated_text)
     await message.edit(content=generated_text)
     user_chat[ctx.message.author.id]+=[{"role": "user", "content": input_msg},
                                        {"role": "Benson", "content": generated_text}]
