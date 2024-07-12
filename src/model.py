@@ -24,7 +24,7 @@ emb_model = AutoModel.from_pretrained('jinaai/jina-embeddings-v2-base-zh', trust
 def generate_response(prompt,history=[],tpt=0.45):
     key_word_messages = [
         {"role": "system", "content": "你是關鍵字搜尋器,你需要為一句句子創造關鍵字,關鍵字並不一定是句子中的詞語,而是要最能夠幫助系統在數據庫中搜尋到有用資料的關鍵字,\n你只能輸出搜尋搜尋名詞，也就是最終結果，不能輸出其他東西"},
-        {"role": "user", "content": f"'你好，Google'的關鍵字是什麼"},
+        {"role": "user", "content": f"你好，Google"},
         {"role": "assistant", "content": "Google"},
         {"role": "user", "content": f"'太郎你鍾意食咩"},
         {"role": "assistant", "content": "太郎食"},
@@ -32,7 +32,7 @@ def generate_response(prompt,history=[],tpt=0.45):
         {"role": "assistant", "content": "宇宙大爆炸"},
         {"role": "user", "content": f"'對於香港it的生態環境有什麼看法"},
         {"role": "assistant", "content": "香港it的看法"},
-        {"role": "user", "content": f"'{prompt}'的關鍵字是什麼"}
+        {"role": "user", "content": f"{prompt}"}
     ]
     
     text = tokenizer.apply_chat_template(
