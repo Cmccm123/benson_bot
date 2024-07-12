@@ -16,7 +16,7 @@ async def msg(ctx, * ,input_msg: str):
         user_chat[ctx.message.author.id] = []
     response = generate_response(input_msg,user_chat[ctx.message.author.id],tpt.get(ctx.message.author.id,0.45))
     generated_text = ""
-    time.sleep(1)
+    time.sleep(2)
     time_start=time.time()
     for new_text in response:
         if new_text  != "":

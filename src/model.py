@@ -22,7 +22,7 @@ reranker = AutoModelForSequenceClassification.from_pretrained(
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 emb_model = AutoModel.from_pretrained('jinaai/jina-embeddings-v2-base-zh', trust_remote_code=True)
 
-def generate_response(prompt,history=[],tpt=0.75):
+def generate_response(prompt,history=[],tpt=0.45):
     key_word_messages = [
         {"role": "system", "content": "你是關鍵字搜尋器,你需要為一句句子創造關鍵字,關鍵字並不一定是句子中的詞語,而是要最能夠幫助系統在數據庫中搜尋到有用資料的關鍵字,\n你只能輸出搜尋搜尋名詞，也就是最終結果，不能輸出其他東西"},
         {"role": "user", "content": f"你好，Google"},
