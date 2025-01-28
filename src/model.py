@@ -121,7 +121,7 @@ def generate_response(prompt,history=[],tpt=0.45):
             inp += f"<context>{i['context']}</centext>\n"
     
     inp += "請使用廣東話"
-
+    print(inp)
     messages = [
         {"role": "system", "content": inp},
     ]

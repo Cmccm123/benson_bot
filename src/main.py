@@ -21,7 +21,7 @@ async def msg(ctx, * ,input_msg: str):
     time.sleep(2)
     time_start=time.time()
     for new_text in response:
-        print(new_text,"text")
+        #print(new_text,"text")
         if new_text  != "":
             generated_text += new_text
             if time.time()-time_start>=1 and generated_text != "":
@@ -29,6 +29,7 @@ async def msg(ctx, * ,input_msg: str):
                 time_start=time.time()
     if time.time()-time_start < 1:
         time.sleep(1)
+    generated_text = generated_text.split("</think>")[1]
     if generated_text != "":
         await message.edit(content=generated_text)
     user_chat[ctx.message.author.id]+=[{"role": "user", "content": input_msg},
