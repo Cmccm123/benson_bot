@@ -3,6 +3,8 @@ import os
 from model import generate_response
 from discord.ext import commands
 import time
+
+print("System init")
 client = commands.Bot(command_prefix='/',intents=discord.Intents.all())
 
 user_chat = {}
@@ -19,6 +21,7 @@ async def msg(ctx, * ,input_msg: str):
     time.sleep(2)
     time_start=time.time()
     for new_text in response:
+        print(new_text,"text")
         if new_text  != "":
             generated_text += new_text
             if time.time()-time_start>=1 and generated_text != "":

@@ -1,14 +1,25 @@
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, AutoModel, TextIteratorStreamer,AutoModelForSequenceClassification
+from transformers import AutoModelForCausalLM, AutoTokenizer, AutoModel, TextIteratorStreamer,AutoModelForSequenceClassification, BitsAndBytesConfig
 import chromadb
 import heapq
 from threading import Thread
 from operator import itemgetter
 device = "cuda" # the device to load the model onto
 chroma_client = chromadb.PersistentClient(path="benson")
-model_path = "shenzhi-wang/Gemma-2-9B-Chinese-Chat"
+model_path = "deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
+quant_config_4bit = BitsAndBytesConfig(
+    load_in_4bit=True,                  
+    bnb_4bit_compute_dtype=torch.float16, 
+    bnb_4bit_use_double_quant=True,     
+    bnb_4bit_quant_type="nf4",        
+)
+
+
+tokenizer = AutoTokenizer.from_pretrained(model_path)
+
 model = AutoModelForCausalLM.from_pretrained(
     model_path,
+    quantization_config=quant_config_4bit,
     torch_dtype="auto",
     device_map="auto"
 )
@@ -19,7 +30,6 @@ reranker = AutoModelForSequenceClassification.from_pretrained(
     trust_remote_code=True,
 ).to(device)
 
-tokenizer = AutoTokenizer.from_pretrained(model_path)
 emb_model = AutoModel.from_pretrained('jinaai/jina-embeddings-v2-base-zh', trust_remote_code=True)
 
 def generate_response(prompt,history=[],tpt=0.45):
